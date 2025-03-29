@@ -17,11 +17,11 @@ A embeded system project for a Fire Alarm in forests using raspberry pi pico w a
 11)  Boost Converter (MT3608)
 
 ## Levels of alert
-0 - Safe, No risk
-1 - Low Risk, Slightly dry conditions
-2 - Moderate Risk, Possible fire conditions
-3 - High Risk, Fire likely	
-4 - Extreme Danger, Fire detected
+0)  Safe, No risk
+1)  Low Risk, Slightly dry conditions
+2)  Moderate Risk, Possible fire conditions
+3)  High Risk, Fire likely	
+4)  Extreme Danger, Fire detected
 
 Schematics:
 ![circuit_image](https://github.com/user-attachments/assets/33410e80-0e8d-4954-8cd2-0472d11ad471)
