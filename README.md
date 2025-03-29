@@ -15,6 +15,7 @@ A embeded system project for a Fire Alarm in forests using raspberry pi pico w a
 9)  TP4056 Charge Controllerv
 10)  18650 Li-Ion Battery (3.7V)
 11)  Boost Converter (MT3608)
+12)  Frame
 
 ## Levels of alert
 0)  Safe, No risk
@@ -25,3 +26,19 @@ A embeded system project for a Fire Alarm in forests using raspberry pi pico w a
 
 Schematics:
 ![circuit_image](https://github.com/user-attachments/assets/33410e80-0e8d-4954-8cd2-0472d11ad471)
+
+## Aerial system
+
+## List of Equipment
+1) Raspberry Pi Pico W (with WiFi for data transmission)
+2) Brushless DC Motor (for propulsion)
+3)  Electronic Speed Controller
+4)  Servos (for ailerons, rudder, and elevator control)
+5)  FPV (First-Person View) Camera (for live video streaming)
+6)  Raspberry Pi-compatible Camera (for taking pictures)
+7)  LiPo Battery (3S or 4S)
+8)  Gyroscope/Accelerometer (MPU6050) (stabilization)
+9)  Barometer (BMP180) (altitude sensing)
+10)  GPS Module (NEO-6M) (navigation)
+11)  Frame
+12)  Controller
