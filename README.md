@@ -1,5 +1,7 @@
 # EnviromentFireAlarm
-A embeded system project for a Fire Alarm in forests using raspberry pi pico w
+A embeded system project for a Fire Alarm in forests using raspberry pi pico w and drone scouting. There are 2 parts in this project, the ground and the aerial system. The ground will collect data and shows us which area is most likely to catch fire. Also, all data will use to mark the area of danger so the aerial system. In the air, there will be a small plane flying above these areas to ensure the alarms. There will be a camera that analyze the data using an AI.
+## Ground system
+
 ## List of Equipment
 
 1) Raspberry Pi Pico W (with WiFi for data transmission)
