@@ -6,10 +6,11 @@ A embeded system project for a Fire Alarm in forests using raspberry pi pico w a
 ## Levels of alert (Algorithm)
 The algorith use data from sensors in order to have a result
 0)  Safe, No risk
-1)  Low Risk, Slightly dry conditions
-2)  Moderate Risk, Possible fire conditions
-3)  High Risk, Fire likely	
-4)  Extreme Danger, Fire detected
+1)  Very Low Risk
+2)  Low Risk
+3)  Moderate Risk
+4)  High Risk
+5)  Extreme Danger, Fire detected
 
 
 ## List of Equipment
@@ -40,7 +41,7 @@ Schematics:
 ![image](https://github.com/user-attachments/assets/80b162be-9ca9-456f-b7bf-9b3156a49b87)
 
 ## ES1 Model
-The ES1 system is used to sensor if there is a fire in the area using 
+The ES1 system is used to sensor if there is a fire in the area. We use 2 sensores, one smoke sensor and one temperature/ humidity sensor. Also, we use 2 parameters, the dencity of the forest and the hill's inclint
 
 
 ---
