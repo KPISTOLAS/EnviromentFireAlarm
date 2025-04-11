@@ -44,6 +44,7 @@ Schematics:
 The ES1 system is used to sensor if there is a fire in the area. We use 2 sensores, one smoke sensor and one temperature/ humidity sensor. Also, we use 2 parameters, the dencity of the forest and the hill's inclint
 
 
+
 ---
 ## Aerial system
 
