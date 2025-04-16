@@ -49,7 +49,75 @@ Schematics:
 ## ES1 Model
 The ES1 system is used to sensor if there is a fire in the area. We use 2 sensores, one smoke sensor and one temperature/ humidity sensor. Also, we use 2 parameters, the dencity of the forest and the hill's inclint
 
+## 🔧 System Overview
 
+The system is made up of the following components:
+
+### 1. **Raspberry Pi Pico W**
+- Main microcontroller.
+- Handles data collection and transmission.
+- Capable of low-power operation for remote deployments.
+
+### 2. **DHT22 Sensor**
+- Measures **temperature** and **humidity**.
+- Key for identifying dry and hot conditions that increase fire risk.
+
+### 3. **MQ2 Gas Sensor**
+- Detects **smoke**, **methane**, **LPG**, and other combustible gases.
+- Analog output for sensing smoke density.
+
+### 4. **LoRa Module (RA-02)**
+- Enables **long-range communication**.
+- Sends collected data wirelessly to a remote dashboard or base station.
+
+---
+
+## 📡 System Architecture
+
+[Sensors] --> [Pico W] --> [LoRa Module] --> [Remote Receiver/Dashboard]
+
+
+- Data from sensors is read by the Pico W.
+- If thresholds are exceeded (e.g. high temp + smoke), a warning is sent.
+- LoRa is used for communication in remote, off-grid areas.
+
+---
+
+## 🖼️ Circuit Diagram
+
+![Circuit Diagram](./path-to-your-image.png)  
+> Ensure to update the image path above with the correct one in your repo.
+
+### Wiring Summary
+
+| Component    | Pin                | Pico W Pin       |
+|--------------|--------------------|------------------|
+| DHT22        | VCC                | 3.3V             |
+|              | GND                | GND              |
+|              | DATA               | GPIO + 10kΩ pull-up |
+| MQ2          | VCC                | 3.3V             |
+|              | GND                | GND              |
+|              | A0 (Analog Out)    | GP26 (ADC)       |
+| LoRa RA-02   | MISO               | GP16             |
+|              | MOSI               | GP15             |
+|              | SCK                | GP14             |
+|              | NSS (CS)           | GP13             |
+|              | RST                | GP12             |
+|              | GND                | GND              |
+|              | VCC                | 3.3V             |
+
+
+## Schematics:
+![image](https://github.com/user-attachments/assets/961f904f-f304-4203-8cdc-5f8ef83befff)
+
+---
+
+## 🧠 How It Works
+
+1. **Monitoring**: Continuously reads data from DHT22 and MQ2.
+2. **Threshold Detection**: If environmental conditions suggest a fire (e.g. high temperature, low humidity, and smoke), the system triggers a warning.
+3. **Communication**: The data is transmitted via LoRa to a receiver/base station.
+4. **Action**: Remote systems (or operators) can trigger an alert, or deploy drones for further scouting.
 
 ---
 ## Aerial system
