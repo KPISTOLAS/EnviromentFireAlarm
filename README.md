@@ -1,5 +1,11 @@
-# EnviromentFireAlarm
-A embeded system project for a Fire Alarm in forests using raspberry pi pico w and drone scouting. There are 2 parts in this project, the ground and the aerial system. The ground will collect data and shows us which area is most likely to catch fire. Also, all data will use to mark the area of danger so the aerial system. In the air, there will be a small plane flying above these areas to ensure the alarms. There will be a camera that analyze the data using an AI.
+# Forest Fire Alarm System Using Raspberry Pi Pico W and Drone Scouting
+
+This is an embedded systems project focused on early fire detection in forested areas. The system is divided into three main components: a dashboard, a ground unit, and an aerial unit.
+1) Ground System: Gathers environmental data (e.g., temperature, humidity, smoke levels) to assess fire risk in specific regions. It processes this data to identify high-risk zones.
+2) Dashboard: Displays real-time data and visualizes fire risk areas on a map. It helps operators monitor the situation and make informed decisions.
+3) Aerial System: A lightweight autonomous aircraft (drone or small plane) flies over high-risk zones to verify alarms. It is equipped with a camera that captures images and video, which are analyzed to confirm fire presence.
+
+The collected data enhances situational awareness and supports faster, more accurate responses to potential wildfires.
 ## Ground system
 ---
 
