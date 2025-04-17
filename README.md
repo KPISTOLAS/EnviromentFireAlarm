@@ -35,7 +35,7 @@ The algorith use data from sensors in order to have a result
 12)  Frame
 
 ## Power System
-As we know in the enviroment there are no easy electrical supply systems so we use a Solar Panel and a Battery for power supply. The batteryu is rechargeable and has a with Pulse-code modulation (PCM). Also, we use aa DFRobot Solar Power Manager 5V for manage solar energy and charging a 3.7V Li-ion/LiPo battery at up to 900mA using either a solar panel or USB input.   
+As we know in the enviroment there are no easy electrical supply systems so we use a Solar Panel and a Battery for power supply. The battery is rechargeable and has a with Pulse-code modulation (PCM). Also, we use aa DFRobot Solar Power Manager 5V for manage solar energy and charging a 3.7V Li-ion/LiPo battery at up to 900mA using either a solar panel or USB input. Finally, i use a Power Supply Module to power raspberry pi pico and to give power to sensors.
 
 1) DFRobot Solar Power Management Module MPPT Chipm, 14$ 
 2) 1-10 Pieces 600mAh Rechargeable Lithium Ion Battery 3.7 V 402530 Li-polymer Batteries Electric Toy LED Light Headset Bateria, 1pc 7$ 
