@@ -21,19 +21,17 @@ The algorith use data from sensors in order to have a result
 
 ## List of Equipment
 
-1) Raspberry Pi Pico W (with WiFi for data transmission)
+1) Raspberry Pi Pico (W)
 2) Temperature & Humidity (DHT22)
 3) Gas Sensor (MQ-2)
-4)  Infrared Flame Sensor)
-5)  Optical Smoke Sensor
-6)  Soil Moisture Sensor
-7)  Holybro Airspeed Sensor
-8)  Solar Panel (6V, 2W)
-9)  TP4056 Charge Controllerv
-10)  18650 Li-Ion Battery (3.7V)
-11)  Boost Converter (MT3608)
-12)  Frame
-
+4)  Rain Sensor	
+5)  Anemometer
+6)  3.7V Li-ion/LiPo Battery	
+7)  DFRobot Solar Power Manager 5V	
+8)  5V Solar Panel (1W–2.5W)	
+9)  MB102 Breadboard Power Supply Module	
+10) Frame
+    
 ## Power System
 As we know in the enviroment there are no easy electrical supply systems so we use a Solar Panel and a Battery for power supply. The battery is rechargeable and has a with Pulse-code modulation (PCM). Also, we use aa DFRobot Solar Power Manager 5V for manage solar energy and charging a 3.7V Li-ion/LiPo battery at up to 900mA using either a solar panel or USB input. Finally, i use a Power Supply Module to power raspberry pi pico and to give power to sensors.
 
