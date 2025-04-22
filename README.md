@@ -72,6 +72,13 @@ The system is made up of the following components:
 - Enables **long-range communication**.
 - Sends collected data wirelessly to a remote dashboard or base station.
 
+## 5. **Rain Sensor**
+- Measures presence and intensity of rainfall.
+- Helps determine local weather conditions.
+
+## 6. **Wind Speed Sensor (Anemometer)**
+- Measures wind speed using rotating cups.
+- Outputs pulses which can be measured for speed.
 ---
 
 ## 📡 System Architecture
@@ -95,7 +102,7 @@ The system is made up of the following components:
 |--------------|--------------------|------------------|
 | DHT22        | VCC                | 3.3V             |
 |              | GND                | GND              |
-|              | DATA               | GPIO + 10kΩ pull-up |
+|              | DATA               |GPIO (e.g. GP15) + 10kΩ|
 | MQ2          | VCC                | 3.3V             |
 |              | GND                | GND              |
 |              | A0 (Analog Out)    | GP26 (ADC)       |
@@ -106,6 +113,12 @@ The system is made up of the following components:
 |              | RST                | GP12             |
 |              | GND                | GND              |
 |              | VCC                | 3.3V             |
+| Rain Sensor	 | VCC                | 3.3V             |
+|              | GND                | GND              |
+|              | DO                 | GP18             |
+| Wind Sensor	 | VCC                | 3.3V             |
+|              | GND                | GND              |
+|              | Signal             | GP16             |
 
 
 ## Schematics:
