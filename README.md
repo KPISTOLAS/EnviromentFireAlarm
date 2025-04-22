@@ -87,7 +87,6 @@ The system is made up of the following components:
 
 ## 🖼️ Circuit Diagram
 
-![Circuit Diagram](./path-to-your-image.png)  
 > Ensure to update the image path above with the correct one in your repo.
 
 ### Wiring Summary
@@ -110,7 +109,8 @@ The system is made up of the following components:
 
 
 ## Schematics:
-![image](https://github.com/user-attachments/assets/961f904f-f304-4203-8cdc-5f8ef83befff)
+![image](https://github.com/user-attachments/assets/1ab83d7f-21eb-4c7e-a765-565a8dcd5b87)
+
 
 ---
 
