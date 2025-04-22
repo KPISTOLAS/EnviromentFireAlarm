@@ -138,13 +138,15 @@ The system is made up of the following components:
 ## List of Equipment
 1) Raspberry Pi Pico W (with WiFi for data transmission)
 2) Brushless DC Motor (for propulsion)
-3)  Electronic Speed Controller
-4)  Servos (for ailerons, rudder, and elevator control)
-5)  FPV (First-Person View) Camera (for live video streaming)
-6)  Raspberry Pi-compatible Camera (for taking pictures)
-7)  LiPo Battery (3S or 4S)
-8)  Gyroscope/Accelerometer (MPU6050) (stabilization)
-9)  Barometer (BMP180) (altitude sensing)
-10)  GPS Module (NEO-6M) (navigation)
-11)  Frame
-12)  Controller
+3) OpenMV Cam M7
+4) Servos (for ailerons, rudder, and elevator control)
+5) RC Transmitter/Receiver 
+6) Frame
+7) Controller
+8) Battery
+
+## Aditional
+1) Micro SD card (for the camera)
+2) LoRa Module or ESP32 (for communication if needed)
+3) GPS Module
+4) INAV (for advanced autopilot)
