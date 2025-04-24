@@ -1,6 +1,9 @@
-# Forest Fire Alarm System Using Raspberry Pi Pico W and Drone Scouting
+# 🌲 Forest Fire Detection System Using Raspberry Pi Pico W and Drone Scoutingv
 
-This is an embedded systems project focused on early fire detection in forested areas. The system is divided into three main components: a dashboard, a ground unit, and an aerial unit.
+An embedded IoT solution designed for early detection of forest fires, integrating ground-based sensors, aerial surveillance, and real-time data visualization.​
+--- 
+##🔍 Overview
+This system comprises three primary components:
 1) Ground System: Gathers environmental data (e.g., temperature, humidity, smoke levels) to assess fire risk in specific regions. It processes this data to identify high-risk zones.
 2) Dashboard: Displays real-time data and visualizes fire risk areas on a map. It helps operators monitor the situation and make informed decisions.
 3) Aerial System: A lightweight autonomous aircraft (drone or small plane) flies over high-risk zones to verify alarms. It is equipped with a camera that captures images and video, which are analyzed to confirm fire presence.
@@ -19,7 +22,7 @@ The algorith use data from sensors in order to have a result
 5)  Extreme Danger, Fire detected
 
 
-## List of Equipment
+## 🧰 Hardware Components
 
 1) Raspberry Pi Pico (W)
 2) Temperature & Humidity (DHT22)
@@ -135,7 +138,7 @@ The system is made up of the following components:
 ---
 ## Aerial system
 
-## List of Equipment
+## 🧰 Hardware Components
 1) Raspberry Pi Pico W (with WiFi for data transmission)
 2) Brushless DC Motor (for propulsion)
 3) OpenMV Cam M7
