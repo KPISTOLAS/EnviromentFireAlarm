@@ -150,3 +150,15 @@ The system is made up of the following components:
 2) LoRa Module or ESP32 (for communication if needed)
 3) GPS Module
 4) INAV (for advanced autopilot)
+   
+---
+## Frame
+
+    The frame will be created using AI tool for 3D design such as meshy.ai, or we will use a existing design from thingiverse.com or cults3d.com
+
+---
+
+
+## Dashboard
+
+        We can use a Geographic Information Systems (GIS) or thingsboard.io (Open-source IoT Platform) or thingspeak (Matlab product).
