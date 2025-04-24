@@ -165,3 +165,9 @@ The system is made up of the following components:
 ## Dashboard
 
         We can use a Geographic Information Systems (GIS) or thingsboard.io (Open-source IoT Platform) or thingspeak (Matlab product).
+
+
+## Final Schema
+
+![image](https://github.com/user-attachments/assets/a2929cae-4054-40eb-a036-ed4e22070622)
+
