@@ -123,7 +123,8 @@ The system is made up of the following components:
 
 
 ## Schematics:
-![image](https://github.com/user-attachments/assets/1ab83d7f-21eb-4c7e-a765-565a8dcd5b87)
+![image](https://github.com/user-attachments/assets/ffe8abce-39cb-4c4a-8ae1-48b14f913cfe)
+
 
 
 ---
