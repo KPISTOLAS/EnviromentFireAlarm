@@ -51,7 +51,7 @@ lora = sx127x.SX127x(spi,
                                 'implicitHeader': False,
                                 'sync_word': 0x12,
                                 'enable_CRC': True})
-
+'''
 def read_sensors():
     """Read all sensors and return values"""
     # Read DHT22
@@ -75,7 +75,7 @@ def read_sensors():
         'rain': rain_status,
         'wind': wind_value
     }
-
+'''
 def send_lora_data(data):
     """Pack data into Cayenne LPP and send via LoRa"""
     frame = LPPFrame()
@@ -103,12 +103,14 @@ def main():
             sensor_data = read_sensors()
             
             # Print sensor values
+                  '''
             print("Temperature: {:.1f}°C".format(sensor_data['temperature']))
             print("Humidity: {:.1f}%".format(sensor_data['humidity']))
             print("MQ2 Value:", sensor_data['mq2'])
             print("Rain Status:", "Dry" if sensor_data['rain'] else "Wet")
             print("Wind Value:", sensor_data['wind'])
             print()
+            '''
             
             # Send data via LoRa
             send_lora_data(sensor_data)
