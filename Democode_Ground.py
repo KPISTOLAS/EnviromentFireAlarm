@@ -1,75 +1,210 @@
-from machine import Pin, ADC, I2C
+from machine import Pin, ADC, RTC
 import utime
-from dht import DHT22  # Library for DHT22 Sensor
 
-# Sensor Pins
-dht_pin = Pin(2)  # DHT22 sensor on GP2
-mq2_pin = ADC(26)  # MQ-2 Gas Sensor on GP26 (ADC0)
-flame_pin = Pin(3, Pin.IN)  # Flame sensor on GP3
-soil_pin = ADC(27)  # Soil Moisture Sensor on GP27 (ADC1)
-wind_pin = ADC(28)  # Wind Speed Sensor on GP28 (ADC2)
-
-# Initialize DHT22
-dht = DHT22(dht_pin)
-
-# Fire Risk Thresholds (Modify as needed)
-TEMP_THRESHOLD_LOW = 30  # °C
-TEMP_THRESHOLD_HIGH = 35  # °C
-HUMIDITY_THRESHOLD = 30  # %
-GAS_THRESHOLD_MODERATE = 300  # Analog value
-GAS_THRESHOLD_HIGH = 500  # Analog value
-FLAME_DETECTED = 0  # 0 means fire detected
-SOIL_DRY_THRESHOLD = 400  # Analog value (0-1023)
-WIND_SPEED_MODERATE = 15  # Wind in km/h (analog range)
-WIND_SPEED_HIGH = 25  # Wind in km/h (analog range)
-
-def read_sensors():
-    """Read all sensor values"""
-    dht.measure()
-    temp = dht.temperature()
-    humidity = dht.humidity()
-    gas_value = mq2_pin.read_u16() // 64  # Scale 16-bit ADC to 10-bit (0-1023)
-    flame_value = flame_pin.value()  # 0 = Fire detected, 1 = No fire
-    soil_value = soil_pin.read_u16() // 64  # Scale ADC
-    wind_value = wind_pin.read_u16() // 64  # Scale ADC
-
-    return temp, humidity, gas_value, flame_value, soil_value, wind_value
-
-def get_fire_risk(temp, humidity, gas, flame, soil, wind):
-    """Determine fire danger level (0-4)"""
-    if flame == FLAME_DETECTED or gas > GAS_THRESHOLD_HIGH:
-        return 4  # 🔥 Extreme Fire Danger
+# --- Configuration ---
+CONFIG = {
+    # Sleep schedule
+    'NIGHT_START': 22,  # 10 PM
+    'NIGHT_END': 8,     # 8 AM
     
-    elif (temp > TEMP_THRESHOLD_HIGH and humidity < HUMIDITY_THRESHOLD) or \
-         (gas > GAS_THRESHOLD_MODERATE and wind > WIND_SPEED_HIGH) or \
-         (soil < SOIL_DRY_THRESHOLD and wind > WIND_SPEED_HIGH):
-        return 3  # 🔴 High Fire Risk
+    # Wake-up thresholds
+    'SAFE_TEMP': 30,    # Wake if temp exceeds this (℃)
+    'SAFE_SMOKE': 300,  # Wake if smoke exceeds this (ppm)
     
-    elif (temp > TEMP_THRESHOLD_LOW and humidity < HUMIDITY_THRESHOLD) or \
-         (gas > GAS_THRESHOLD_MODERATE) or \
-         (wind > WIND_SPEED_MODERATE):
-        return 2  # 🟠 Moderate Fire Risk
+    # Danger thresholds
+    'TEMP_THRESHOLDS': [20, 25, 30, 35, 40],
+    'HUMIDITY_THRESHOLDS': [60, 50, 40, 30, 20],
+    'SMOKE_THRESHOLDS': [100, 300, 500, 700, 900],
+    'WIND_THRESHOLDS': [10, 20, 30, 40, 50],
     
-    elif soil < SOIL_DRY_THRESHOLD:
-        return 1  # 🟡 Low Fire Risk
+    # Environmental factors
+    'VEGETATION_DENSITY': 0.5,
+    'TERRAIN_SLOPE': 2,
+    'VEGETATION_TYPE': 2,
+    'VEGETATION_FACTORS': {1: 0.7, 2: 1.0, 3: 0.85},
     
-    return 0  # 🟢 Safe
+    # Timing
+    'DAY_UPDATE_INTERVAL_MS': 5000,
+    'NIGHT_CHECK_INTERVAL_MS': 10000
+}
 
-while True:
-    temp, humidity, gas, flame, soil, wind = read_sensors()
-    risk_level = get_fire_risk(temp, humidity, gas, flame, soil, wind)
+# --- Hardware Setup ---
+# Sensors
+temp_sensor = ADC(26)
+humidity_sensor = ADC(27)
+smoke_sensor = ADC(28)
+rain_sensor = Pin(15, Pin.IN, Pin.PULL_UP)
+wind_sensor = Pin(16, Pin.IN, Pin.PULL_UP)
 
-    risk_messages = {
-        0: "🟢 SAFE - No fire risk",
-        1: "🟡 LOW RISK - Dry conditions",
-        2: "🟠 MODERATE RISK - Fire possible",
-        3: "🔴 HIGH RISK - Fire likely!",
-        4: "🔥🚨 EXTREME DANGER - FIRE DETECTED! 🚨🔥"
-    }
+# Outputs
+alarm_led = Pin(25, Pin.OUT)
+# alarm_buzzer = Pin(20, Pin.OUT)  # Uncomment if using buzzer
 
-    print(f"🌡 Temp: {temp}°C  💧 Humidity: {humidity}%")
-    print(f"🔥 Gas Level: {gas}  🚨 Flame: {flame}")
-    print(f"🌱 Soil Moisture: {soil}  💨 Wind Speed: {wind}")
-    print(f"⚠️ Fire Risk Level: {risk_level} - {risk_messages[risk_level]}\n")
+# Initialize RTC (set proper time before deployment)
+rtc = RTC()
+# rtc.datetime((2025, 5, 2, 0, 14, 30, 0, 0))  # Uncomment and set actual time
 
-    utime.sleep(2)  # Delay for stability
+# --- Wind Speed Measurement ---
+wind_pulse_count = 0
+last_wind_measurement = 0
+last_wind_speed = 0.0  # Cached value
+
+def wind_pulse_handler(pin):
+    global wind_pulse_count
+    wind_pulse_count += 1
+
+wind_sensor.irq(trigger=Pin.IRQ_RISING, handler=wind_pulse_handler)
+
+# --- Time Utilities ---
+def get_current_hour():
+    return utime.localtime()[3]
+
+def in_nighttime_range(hour):
+    """Handle midnight crossover correctly"""
+    if CONFIG['NIGHT_START'] > CONFIG['NIGHT_END']:
+        return hour >= CONFIG['NIGHT_START'] or hour < CONFIG['NIGHT_END']
+    return CONFIG['NIGHT_START'] <= hour < CONFIG['NIGHT_END']
+
+# --- Sensor Functions ---
+def read_temperature():
+    try:
+        reading = temp_sensor.read_u16()
+        voltage = reading * 3.3 / 65535
+        temp = (voltage - 0.5) * 100
+        if not -10 <= temp <= 100:
+            raise ValueError("Implausible temperature")
+        return temp
+    except Exception as e:
+        print(f"[ERROR] Temperature: {e}")
+        return 25.0
+
+def read_humidity():
+    try:
+        reading = humidity_sensor.read_u16()
+        return min(max((reading / 65535) * 100, 0), 100)
+    except Exception as e:
+        print(f"[ERROR] Humidity: {e}")
+        return 50.0
+
+def read_smoke():
+    try:
+        return min(smoke_sensor.read_u16() * (1000 / 65535), 2000)
+    except Exception as e:
+        print(f"[ERROR] Smoke: {e}")
+        return 0.0
+
+def read_rain():
+    try:
+        return rain_sensor.value()
+    except Exception as e:
+        print(f"[ERROR] Rain: {e}")
+        return 1
+
+def measure_wind_speed():
+    global wind_pulse_count, last_wind_measurement, last_wind_speed
+    try:
+        current_time = utime.ticks_ms()
+        elapsed = utime.ticks_diff(current_time, last_wind_measurement)
+        
+        if elapsed >= 5000:  # Update every 5 seconds
+            wind_speed_ms = wind_pulse_count / (elapsed / 1000)
+            last_wind_speed = wind_speed_ms * 3.6  # km/h
+            wind_pulse_count = 0
+            last_wind_measurement = current_time
+            
+            if not 0 <= last_wind_speed <= 100:
+                raise ValueError("Implausible wind speed")
+        
+        return last_wind_speed
+    except Exception as e:
+        print(f"[ERROR] Wind: {e}")
+        return 0.0
+
+# --- Danger Calculation ---
+def get_parameter_level(value, thresholds):
+    for i, threshold in enumerate(thresholds):
+        if value < threshold:
+            return i
+    return 5  # Extreme
+
+def calculate_fire_danger(temp, humidity, smoke, rain, wind):
+    temp_level = get_parameter_level(temp, CONFIG['TEMP_THRESHOLDS'])
+    humidity_level = get_parameter_level(humidity, CONFIG['HUMIDITY_THRESHOLDS'])
+    smoke_level = get_parameter_level(smoke, CONFIG['SMOKE_THRESHOLDS'])
+    wind_level = get_parameter_level(wind, CONFIG['WIND_THRESHOLDS'])
+    
+    danger_score = (
+        temp_level * 0.25 +
+        humidity_level * 0.2 +
+        smoke_level * 0.2 +
+        wind_level * 0.2 +
+        (0 if rain else 1) * 0.5 +  # rain_factor * 5 * 0.1 simplified
+        (CONFIG['VEGETATION_DENSITY'] * 
+         CONFIG['VEGETATION_FACTORS'][CONFIG['VEGETATION_TYPE']] * 
+         CONFIG['TERRAIN_SLOPE'] * 0.05)
+    )
+    
+    return ["Safe", "Very Low", "Low", "Moderate", "High", "Extreme"][min(max(round(danger_score), 0), 5)]
+
+# --- Alarm System ---
+def trigger_alarm(level):
+    print(f"🚨 ALARM: {level} fire risk!")
+    alarm_led.on()
+    # alarm_buzzer.on()  # Uncomment if using buzzer
+
+def clear_alarm():
+    alarm_led.off()
+    # alarm_buzzer.off()
+
+# --- Main Operations ---
+def display_readings():
+    temp = read_temperature()
+    humidity = read_humidity()
+    smoke = read_smoke()
+    rain = read_rain()
+    wind = measure_wind_speed()
+    
+    danger = calculate_fire_danger(temp, humidity, smoke, rain, wind)
+    
+    print("\n--- Fire Danger Assessment ---")
+    print(f"Danger Level: {danger}")
+    print(f"Temperature: {temp:.1f}°C | Humidity: {humidity:.1f}%")
+    print(f"Smoke: {smoke:.1f} ppm | Wind: {wind:.1f} km/h")
+    print(f"Rain: {'No' if rain else 'Yes'}")
+    print("-----------------------------")
+    
+    if danger in ("High", "Extreme"):
+        trigger_alarm(danger)
+    else:
+        clear_alarm()
+
+def enter_sleep_mode():
+    print(f"🌙 Sleeping until {CONFIG['NIGHT_END']}:00 or alarm trigger")
+    clear_alarm()
+    
+    while in_nighttime_range(get_current_hour()):
+        temp = read_temperature()
+        smoke = read_smoke()
+        
+        if temp > CONFIG['SAFE_TEMP'] or smoke > CONFIG['SAFE_SMOKE']:
+            print(f"🔥 EMERGENCY: Temp={temp:.1f}℃, Smoke={smoke:.1f}ppm")
+            trigger_alarm("Nighttime Alert")
+            break
+        
+        utime.sleep_ms(CONFIG['NIGHT_CHECK_INTERVAL_MS'])
+    
+    print("☀️ Resuming normal operation")
+
+# --- Main Loop ---
+try:
+    while True:
+        if in_nighttime_range(get_current_hour()):
+            enter_sleep_mode()
+        else:
+            display_readings()
+            utime.sleep_ms(CONFIG['DAY_UPDATE_INTERVAL_MS'])
+            
+except KeyboardInterrupt:
+    clear_alarm()
+    print("System stopped by user")
+    
