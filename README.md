@@ -1,4 +1,4 @@
-# 🌲 Forest Fire Detection System Using Raspberry Pi Pico W and Drone Scoutingv
+# 🌲 Forest Fire Detection System Using Raspberry Pi Pico W and Drone Scouting
 
 An embedded IoT solution designed for early detection of forest fires, integrating ground-based sensors, aerial surveillance, and real-time data visualization.​
 --- 
